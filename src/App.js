@@ -1,8 +1,9 @@
 import React from 'react';
 import './App.css';
-import { TextField, Typography, Button, List, ListItem, ListItemText } from '@material-ui/core';
+import { TextField, Typography, Button, List, ListItem, ListItemText, Snackbar } from '@material-ui/core';
 import { KeyboardDatePicker, KeyboardTimePicker } from '@material-ui/pickers';
 import SaveIcon from '@material-ui/icons/Save';
+import { Alert } from '@material-ui/lab';
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -14,30 +15,51 @@ class App extends React.Component {
       startTime: null,
       endDate: null,
       endTime: null,
+      snackBarOpen: false,
     }
   }
+
+  handleClick = () => {
+    this.setState({
+      snackBarOpen: true
+    })
+  };
+
+  handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    this.setState({
+      snackBarOpen: false
+    })
+  };
 
   checkValidate() {
     const {
       title, content, startDate, startTime, endDate, endTime
     } = this.state;
-    //if (!title || !content || !startDate || !startTime || !endDate || !endTime) {
-    //  return false
-    //}
     console.log(title.length);
     if (!title || !content || !startDate || !startTime || !endDate || !endTime) {
-      //alert()
+      if (title.length >= 20 || title.length === 0) {
+        alert("제목은 20글자 이하로 작성해주세요.");
+      }
+      if (content.length >= 50 || content.length === 0) {
+        alert("상세내용은 50글자 이하로 작성해주세요.");
+      }
+      if (startDate === null) {
+        alert("시작 예정일을 선택해주세요.");
+      }
+      if (startTime === null) {
+        alert("시작시간을 선택해주세요.");
+      }
+      if (endDate === null) {
+        alert("종료 예정일을 선택해주세요.");
+      }
+      if (endTime === null) {
+        alert("종료시간을 선택해주세요.");
+      }
       return false
     }
-    if (title.length >= 20) {
-      alert("제목은 20글자 이하로 작성해주세요.");
-      return false
-    }
-    if (content.length >= 50) {
-      alert("상세내용은 50글자 이하로 작성해주세요.");
-      return false
-    }
-
     return true
   }
 
@@ -57,12 +79,12 @@ class App extends React.Component {
         */
       });
     } else {
-      alert("error");
+      this.setState({ snackBarOpen: true })
     }
   }
 
   render() {
-    const { title, content, startDate, startTime, todoList, endDate, endTime } = this.state;
+    const { title, content, startDate, startTime, todoList, endDate, endTime, snackBarOpen, handleClose } = this.state;
     return (
       <div className="App">
         <div className="header">TODO LIST</div>
@@ -71,12 +93,15 @@ class App extends React.Component {
             label="제목" size="normal" margin="normal" fullWidth required
             onChange={(e) => this.setState({ title: e.target.value })} //return this.setState({ startTime: value })과 같음
             value={title}
-            rowsMax={20}
+            error={title === "" ? true : false}
+            helperText={title === "" ? "제목을 입력하세요" : ""}
           />
           <TextField
             label="상세내용" size="normal" margin="normal" fullWidth multiline
             onChange={(e) => this.setState({ content: e.target.value })} //return this.setState({ startTime: value })과 같음
             value={content}
+            error={content === "" ? true : false}
+            helperText={content === "" ? "제목을 입력하세요" : ""}
           />
           <KeyboardDatePicker
             disableToolbar
@@ -138,11 +163,16 @@ class App extends React.Component {
           >
             Save
         </Button>
+          <Snackbar open={snackBarOpen} autoHideDuration={6000} onClose={() => this.this.handleClose()}>
+            <Alert onClose={() => this.handleClose()} severity="error">
+              빈 칸을 입력해주세요.
+            </Alert>
+          </Snackbar>
         </div>
         <div className="list_area">
           <List>
             {todoList.map((todoItem, idx) => {
-              const { title, content, startDate, startTime, endDate, endTime } = todoItem;
+              const { title, startDate, startTime, endDate, endTime } = todoItem;
               return (
                 <ListItem key={idx} role={undefined} dense button>
                   <ListItemText
