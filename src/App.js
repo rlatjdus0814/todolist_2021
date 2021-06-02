@@ -42,20 +42,15 @@ class App extends React.Component {
     if (!title || !content || !startDate || !startTime || !endDate || !endTime) {
       if (title.length >= 20 || title.length === 0) {
         alert("제목은 20글자 이하로 작성해주세요.");
-      }
-      if (content.length >= 50 || content.length === 0) {
+      } else if (content.length >= 50 || content.length === 0) {
         alert("상세내용은 50글자 이하로 작성해주세요.");
-      }
-      if (startDate === null) {
+      } else if (startDate === null) {
         alert("시작 예정일을 선택해주세요.");
-      }
-      if (startTime === null) {
+      } else if (startTime === null) {
         alert("시작시간을 선택해주세요.");
-      }
-      if (endDate === null) {
+      } else if (endDate === null) {
         alert("종료 예정일을 선택해주세요.");
-      }
-      if (endTime === null) {
+      } else if (endTime === null) {
         alert("종료시간을 선택해주세요.");
       }
       return false
@@ -69,14 +64,12 @@ class App extends React.Component {
       todoList.push({ title: title.trim(), content: content.trim(), startDate, startTime, endDate, endTime });
       this.setState({
         todoList,
-        /*
         title: "",
         content: "",
         startDate: null,
         startTime: null,
         endDate: null,
         endTime: null,
-        */
       });
     } else {
       this.setState({ snackBarOpen: true })
@@ -101,7 +94,7 @@ class App extends React.Component {
             onChange={(e) => this.setState({ content: e.target.value })} //return this.setState({ startTime: value })과 같음
             value={content}
             error={content === "" ? true : false}
-            helperText={content === "" ? "제목을 입력하세요" : ""}
+            helperText={content === "" ? "내용을 입력하세요" : ""}
           />
           <KeyboardDatePicker
             disableToolbar
